@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { UpdateTodoDto } from './dto/update-todo.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './interfaces/todo.interface';
 import { CreateTodoDto } from './dto/create-todo.dto';
 
-@Controller('')
+@Controller('/')
 export class TodoController {
   constructor(private todoService: TodoService) {}
 
@@ -19,11 +28,16 @@ export class TodoController {
 
   @Post()
   create(@Body() todo: CreateTodoDto) {
-    return this.todoService.create(todo)
+    return this.todoService.create(todo);
   }
 
-  @Post("updateStatus/:id")
-  updateDoneStatus(@Param() id: number, @Body() doneStatus) {
-    return this.todoService.updateDoneStatus(id, doneStatus);
+  @Put('update/:id')
+  updateTodo(@Param('id') id: number, @Body() todo: UpdateTodoDto) {
+    return this.todoService.updateTodo(id, todo);
+  }
+
+  @Delete('delete/:id')
+  deleteTodo(@Param('id') id: number) {
+    return this.todoService.deleteTodo(id);
   }
 }
