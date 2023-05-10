@@ -1,4 +1,5 @@
 import { CreateTodoDto } from './dto/create-todo.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './interfaces/todo.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -27,7 +28,14 @@ export class TodoService {
     });
   }
 
-  updateDoneStatus(id: number, done: boolean) {
-    return this.todos[id].done = done;
+  updateTodo(id: number, todo: UpdateTodoDto) {
+    this.todos[id].done = todo.done;
+    this.todos[id].title = todo.title;
+
+    return this.todos[id];
+  }
+
+  deleteTodo(id: number) {
+    return this.todos.splice(id, 1);
   }
 }
