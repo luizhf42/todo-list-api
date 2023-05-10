@@ -20,6 +20,10 @@ export class TodoService {
     return this.todos.filter((todo) => todo.done);
   }
 
+  findById(id: number) {
+    return this.todos[id];
+  }
+
   create(todo: CreateTodoDto) {
     return this.todos.push({
       id: this.todos.length,
