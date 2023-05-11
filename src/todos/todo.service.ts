@@ -6,10 +6,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class TodoService {
   private todos: Todo[] = [
-    { id: 1, title: 'Code', done: false },
-    { id: 2, title: 'Do the dishes', done: true },
-    { id: 3, title: 'Make coffee', done: false },
-    { id: 4, title: 'Walk the dog', done: false },
+    { id: 0, title: 'Code', done: false },
+    { id: 1, title: 'Do the dishes', done: true },
+    { id: 2, title: 'Make coffee', done: false },
+    { id: 3, title: 'Walk the dog', done: false },
   ];
 
   findAll(): Todo[] {
@@ -24,12 +24,14 @@ export class TodoService {
     return this.todos[id];
   }
 
-  create(todo: CreateTodoDto) {
-    return this.todos.push({
+  createTodo(todo: CreateTodoDto) {
+    this.todos.push({
       id: this.todos.length,
       title: todo.title,
       done: todo.done,
     });
+
+    return this.todos.at(-1);
   }
 
   updateTodo(id: number, todo: UpdateTodoDto) {
@@ -40,6 +42,7 @@ export class TodoService {
   }
 
   deleteTodo(id: number) {
-    return this.todos.splice(id, 1);
+    this.todos.splice(id, 1);
+    return `Deleted todo of ID #${id}`;
   }
 }

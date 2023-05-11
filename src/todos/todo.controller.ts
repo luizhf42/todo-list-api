@@ -1,4 +1,3 @@
-import { UpdateTodoDto } from './dto/update-todo.dto';
 import {
   Body,
   Controller,
@@ -7,10 +6,14 @@ import {
   Put,
   Post,
   Delete,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './interfaces/todo.interface';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 import { CreateTodoDto } from './dto/create-todo.dto';
+import { ValidationUtil } from './utils/validation.util';
 
 @Controller('/')
 export class TodoController {
@@ -26,23 +29,29 @@ export class TodoController {
     return this.todoService.findAllDone();
   }
 
-  @Get("/:id")
+  @Get('/:id')
   findById(@Param('id') id: number) {
-    return this.todoService.findById(id);
+    const todo = this.todoService.findById(id);
+    if (todo) return todo;
+    throw new NotFoundException('Inexistent todo');
   }
 
   @Post()
-  create(@Body() todo: CreateTodoDto) {
-    return this.todoService.create(todo);
+  async create(@Body() todo: CreateTodoDto) {
+    if (await ValidationUtil.isValidRequestBody(todo)) return this.todoService.createTodo(todo);
+    throw new BadRequestException("Invalid todo body");
   }
 
   @Put('update/:id')
-  updateTodo(@Param('id') id: number, @Body() todo: UpdateTodoDto) {
-    return this.todoService.updateTodo(id, todo);
+  async updateTodo(@Param('id') id: number, @Body() todo: UpdateTodoDto) {
+    if (await ValidationUtil.isValidRequestBody(todo)) return this.todoService.updateTodo(id, todo);
+    throw new BadRequestException("Invalid todo body");
   }
 
   @Delete('delete/:id')
   deleteTodo(@Param('id') id: number) {
-    return this.todoService.deleteTodo(id);
+    const todo = this.todoService.findById(id);
+    if (todo) return this.todoService.deleteTodo(id);
+    throw new NotFoundException('Inexistent todo');
   }
 }
