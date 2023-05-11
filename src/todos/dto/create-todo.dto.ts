@@ -1,4 +1,4 @@
-export class CreateTodoDto {
-    title: string;
-    done: boolean;
+import { BaseTodoDto } from './base-todo.dto';
+
+export class CreateTodoDto extends BaseTodoDto<CreateTodoDto> {
 }
